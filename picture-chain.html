@@ -907,14 +907,7 @@
   }
 
   document.getElementById('downloadBtn').addEventListener('click', function(){
-    var a = document.createElement('a');
-    a.href = _origUrl;
-    a.download = 'puzzle-completed.png';
-    a.target = '_blank';
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    window.open(_origUrl, '_blank');
   });
   againBtn.addEventListener('click', resetGame);
 
