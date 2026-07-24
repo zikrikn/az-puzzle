@@ -2,5 +2,12 @@ services:
   puzzle:
     build: .
     ports:
-      - "8080:80"
+      - "8099:80"
     restart: unless-stopped
+    networks:
+      - cf-tunnel
+
+networks:
+  cf-tunnel:
+    name: cf-tunnel
+    external: true
