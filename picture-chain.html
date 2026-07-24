@@ -47,7 +47,16 @@
     padding: 28px 22px 26px;
     box-shadow: 0 30px 60px -20px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.04);
     border: 1px solid rgba(205,162,63,0.16);
+    display:none;
   }
+  .card.visible{ display:block; }
+  .gate{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding: 28px 16px; }
+  .gate.hidden{ display:none; }
+  .gate-box{ text-align:center; }
+  .gate-box h2{ font-family:'Fraunces',serif; font-size:1.3rem; color:var(--ink); margin:0 0 6px; }
+  .gate-box p{ font-size:0.88rem; color:var(--ink-muted); margin:0 0 16px; }
+  .gate-box input{ width:180px; text-align:center; }
+  .gate-box .feedback{ margin-top:8px; }
   .eyebrow{
     font-family:'Fraunces', serif; font-style:italic; font-weight:500;
     font-size: 0.92rem; color: var(--gold-bright); margin: 0 0 4px;
@@ -197,8 +206,17 @@
 </head>
 <body>
 
+<div class="gate" id="gate">
+  <div class="gate-box">
+    <h2>Enter code</h2>
+    <p>Masukkan kode untuk melanjutkan.</p>
+    <input type="text" id="gateCode" autocomplete="off" placeholder="****" maxlength="6" aria-label="Access code">
+    <p class="feedback" id="gateFeedback"></p>
+  </div>
+</div>
+
 <div class="stage">
-  <div class="card">
+  <div class="card" id="card">
     <div id="qcard">
       <p class="eyebrow" id="eyebrow">Pertanyaan 1 dari 3</p>
       <h1 class="title">Satu per Satu</h1>
@@ -264,6 +282,27 @@
 <canvas id="artCanvas" style="display:none;"></canvas>
 
 <script>
+  // ---------- gate ----------
+  const gateEl = document.getElementById('gate');
+  const gateCode = document.getElementById('gateCode');
+  const gateFeedback = document.getElementById('gateFeedback');
+  const cardEl = document.getElementById('card');
+
+  gateCode.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      if(gateCode.value === '0626'){
+        gateEl.classList.add('hidden');
+        cardEl.classList.add('visible');
+      } else {
+        gateFeedback.textContent = 'Kode salah, coba lagi.';
+        gateFeedback.className = 'feedback wrong';
+        gateCode.classList.add('shake');
+        setTimeout(() => gateCode.classList.remove('shake'), 400);
+      }
+    }
+  });
+
   // ---------- picture generation ----------
   const SIZE = 240, CELL = 80;
   let _photoUrl = '';
@@ -809,7 +848,7 @@
     if(filled === 9){
       gridEl.classList.add('complete');
       boardCaption.textContent = 'Selesai!';
-      document.querySelector('.card').classList.add('flat');
+      cardEl.classList.add('flat');
       setTimeout(() => revealEl.classList.add('show'), 500);
     }
   }
@@ -869,7 +908,7 @@
     order = shuffle([0,1,2,3,4,5,6,7,8]);
     qcard.style.display = '';
     revealEl.classList.remove('show');
-    document.querySelector('.card').classList.remove('flat');
+    cardEl.classList.remove('flat');
     gridEl.classList.remove('complete');
     boardCaption.textContent = 'Jawab dulu buat mulai dapetin potongan gambarnya.';
     document.querySelectorAll('.link-dot').forEach(d => d.classList.remove('solved'));
