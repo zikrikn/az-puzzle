@@ -1,13 +1,13 @@
 services:
-  puzzle:
+  azpuzzle:
     build: .
-    ports:
-      - "8099:80"
+    container_name: azpuzzle
     restart: unless-stopped
+    expose:
+      - "80"
     networks:
-      - cf-tunnel
+      - apps_network
 
 networks:
-  cf-tunnel:
-    name: cf-tunnel
+  apps_network:
     external: true
