@@ -308,15 +308,33 @@
   const SIZE = 720, CELL = 240;
   let _photoUrl = '';
   let _photoBgW = SIZE, _photoBgH = SIZE, _photoOx = 0, _photoOy = 0;
+  let _origUrl = '';
 
   function loadPhoto(url, onReady){
-    const img = new Image();
+    _origUrl = url;
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
     img.onload = function(){
+      var c = document.createElement('canvas');
+      c.width = SIZE; c.height = SIZE;
+      var ctx = c.getContext('2d');
+      ctx.fillStyle = '#221732';
+      ctx.fillRect(0, 0, SIZE, SIZE);
+      var scale = Math.min(SIZE / img.width, SIZE / img.height);
+      var dw = img.width * scale;
+      var dh = img.height * scale;
+      var dx = (SIZE - dw) / 2;
+      var dy = (SIZE - dh) / 2;
+      ctx.drawImage(img, dx, dy, dw, dh);
+      try {
+        _photoUrl = c.toDataURL('image/png');
+      } catch(e){
+        _photoUrl = url;
+      }
       _photoBgW = SIZE;
       _photoBgH = SIZE;
       _photoOx = 0;
       _photoOy = 0;
-      _photoUrl = url;
       onReady();
     };
     img.onerror = function(){
@@ -920,7 +938,7 @@
 
   document.getElementById('downloadBtn').addEventListener('click', function(){
     var a = document.createElement('a');
-    a.href = _photoUrl;
+    a.href = _origUrl;
     a.download = 'puzzle-completed.png';
     a.target = '_blank';
     a.rel = 'noopener';
