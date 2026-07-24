@@ -306,40 +306,19 @@
 
   // ---------- picture generation ----------
   const SIZE = 720, CELL = 240;
+  const DISPLAY = 80;
   let _photoUrl = '';
-  let _photoBgW = SIZE, _photoBgH = SIZE, _photoOx = 0, _photoOy = 0;
   let _origUrl = '';
 
   function loadPhoto(url, onReady){
     _origUrl = url;
     var img = new Image();
-    img.crossOrigin = 'anonymous';
     img.onload = function(){
-      var c = document.createElement('canvas');
-      c.width = SIZE; c.height = SIZE;
-      var ctx = c.getContext('2d');
-      ctx.fillStyle = '#221732';
-      ctx.fillRect(0, 0, SIZE, SIZE);
-      var scale = Math.min(SIZE / img.width, SIZE / img.height);
-      var dw = img.width * scale;
-      var dh = img.height * scale;
-      var dx = (SIZE - dw) / 2;
-      var dy = (SIZE - dh) / 2;
-      ctx.drawImage(img, dx, dy, dw, dh);
-      try {
-        _photoUrl = c.toDataURL('image/png');
-      } catch(e){
-        _photoUrl = url;
-      }
-      _photoBgW = SIZE;
-      _photoBgH = SIZE;
-      _photoOx = 0;
-      _photoOy = 0;
+      _photoUrl = url;
       onReady();
     };
     img.onerror = function(){
       _photoUrl = url;
-      _photoBgW = SIZE; _photoBgH = SIZE; _photoOx = 0; _photoOy = 0;
       onReady();
     };
     img.src = url;
@@ -799,9 +778,13 @@
     const el = document.createElement('div');
     el.className = 'piece';
     el.dataset.index = index;
-    el.style.backgroundImage = 'url(' + _photoUrl + ')';
-    el.style.backgroundPosition = '-' + (col * CELL + _photoOx) + 'px -' + (row * CELL + _photoOy) + 'px';
-    el.style.backgroundSize = _photoBgW + 'px ' + _photoBgH + 'px';
+    el.style.overflow = 'hidden';
+    el.style.position = 'relative';
+    var img = document.createElement('img');
+    img.src = _photoUrl;
+    img.draggable = false;
+    img.style.cssText = 'position:absolute;width:' + SIZE + 'px;height:' + SIZE + 'px;object-fit:contain;left:-' + (col * CELL) + 'px;top:-' + (row * CELL) + 'px;pointer-events:none;';
+    el.appendChild(img);
     attachDrag(el);
     return el;
   }
