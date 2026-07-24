@@ -305,23 +305,14 @@
   });
 
   // ---------- picture generation ----------
-  const SIZE = 720, CELL = 240;
-  const DISPLAY = 80;
+  const SIZE = 480, CELL = 160;
   let _photoUrl = '';
   let _origUrl = '';
 
   function loadPhoto(url, onReady){
     _origUrl = url;
-    var img = new Image();
-    img.onload = function(){
-      _photoUrl = url;
-      onReady();
-    };
-    img.onerror = function(){
-      _photoUrl = url;
-      onReady();
-    };
-    img.src = url;
+    _photoUrl = url;
+    onReady();
   }
 
   // ---------- questions ----------
@@ -778,13 +769,9 @@
     const el = document.createElement('div');
     el.className = 'piece';
     el.dataset.index = index;
-    el.style.overflow = 'hidden';
-    el.style.position = 'relative';
-    var img = document.createElement('img');
-    img.src = _photoUrl;
-    img.draggable = false;
-    img.style.cssText = 'position:absolute;width:' + SIZE + 'px;height:' + SIZE + 'px;object-fit:contain;left:-' + (col * CELL) + 'px;top:-' + (row * CELL) + 'px;pointer-events:none;';
-    el.appendChild(img);
+    el.style.backgroundImage = 'url(' + _photoUrl + ')';
+    el.style.backgroundPosition = '-' + (col * CELL) + 'px -' + (row * CELL) + 'px';
+    el.style.backgroundSize = SIZE + 'px ' + SIZE + 'px';
     attachDrag(el);
     return el;
   }
