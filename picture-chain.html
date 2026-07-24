@@ -312,11 +312,10 @@
   function loadPhoto(url, onReady){
     const img = new Image();
     img.onload = function(){
-      const scale = Math.max(SIZE / img.width, SIZE / img.height);
-      _photoBgW = img.width * scale;
-      _photoBgH = img.height * scale;
-      _photoOx = (_photoBgW - SIZE) / 2;
-      _photoOy = (_photoBgH - SIZE) / 2;
+      _photoBgW = SIZE;
+      _photoBgH = SIZE;
+      _photoOx = 0;
+      _photoOy = 0;
       _photoUrl = url;
       onReady();
     };
